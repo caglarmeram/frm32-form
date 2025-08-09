@@ -3425,179 +3425,129 @@ function removeFile(docNumber) {
         });
     </script>
 <script>
-(() => {
-  const doc = (id) => document.getElementById(id);
+(function () {
+  const form = document.getElementById('hseForm');
+  const overlay = document.getElementById('loadingOverlay');
+  const successMessage = document.getElementById('successMessage');
+  const errorMessage = document.getElementById('errorMessage');
+  const progressFill = document.getElementById('progressFill');
+  const progressText = document.getElementById('progressText');
 
-  // --- Language toggle -------------------------------------------------------
-  const langButtons = document.querySelectorAll('.lang-btn');
-  function setLanguage(lang) {
+  // Language toggle
+  window.setLanguage = function(lang) {
     document.body.classList.toggle('turkish', lang === 'tr');
-    langButtons.forEach(b => b.classList.toggle('active', b.textContent.includes(lang === 'tr' ? 'Türkçe' : 'English')));
-    localStorage.setItem('frm32_lang', lang);
-  }
-  window.setLanguage = setLanguage; // keep your inline onclicks working
+    document.querySelectorAll('.lang-btn').forEach(btn =>
+      btn.classList.toggle('active', btn.textContent.trim().startsWith(lang === 'tr' ? 'Türkçe' : 'English'))
+    );
+  };
 
-  // Restore saved language preference
-  setLanguage(localStorage.getItem('frm32_lang') || 'en');
-
-  // --- File upload helpers ---------------------------------------------------
-  function handleFileUpload(input, idx) {
-    const info = doc(`fileInfo${idx}`);
+  // File upload label + simple size/type check
+  window.handleFileUpload = function(input, idx) {
+    const info = document.getElementById('fileInfo' + idx);
     if (!info) return;
-    const f = input.files && input.files[0];
-    if (f) {
-      const sizeKB = Math.round(f.size / 1024);
-      info.innerHTML = `${f.name} — ${sizeKB} KB`;
+    if (input.files && input.files[0]) {
+      const f = input.files[0];
+      const mb = (f.size/1024/1024).toFixed(2);
+      info.textContent = `${f.name} (${mb} MB)`;
       info.classList.add('show');
     } else {
       info.textContent = document.body.classList.contains('turkish') ? 'Dosya yok' : 'No file';
       info.classList.remove('show');
     }
     updateProgress();
-  }
-  window.handleFileUpload = handleFileUpload;
-
-  // --- Character count on textareas -----------------------------------------
-  function updateCharCount(el) {
-    const counter = el.parentElement.querySelector('.char-count');
-    if (counter) counter.textContent = `${el.value.length} characters`;
-    updateProgress();
-  }
-  window.updateCharCount = updateCharCount;
-  document.querySelectorAll('textarea.response-textarea').forEach(t => {
-    t.addEventListener('input', () => updateCharCount(t));
-    updateCharCount(t);
-  });
-
-  // --- Form ID generation (based on TIN + date + short hash) ----------------
-  function generateFormId() {
-    const tin = doc('taxNumber')?.value?.trim() || '';
-    const date = doc('assessmentDate')?.value?.replaceAll('-', '') || '';
-    if (!tin || !date) return '';
-    // Simple deterministic-ish suffix
-    const base = `${tin}-${date}`;
-    let hash = 0;
-    for (let i = 0; i < base.length; i++) hash = ((hash << 5) - hash) + base.charCodeAt(i);
-    const suffix = Math.abs(hash).toString(36).slice(0, 5).toUpperCase();
-    return `FRM32-${tin.slice(-4)}-${date}-${suffix}`;
-  }
-  window.generateFormId = () => {
-    const id = generateFormId();
-    // If you later re-enable the hidden input, set it here:
-    // doc('formId').value = id;
-    return id;
   };
 
-  // --- Progress calculation --------------------------------------------------
-  // Count: filled required inputs (including required file inputs) + required textareas
+  // Character counter for textareas
+  window.updateCharCount = function(el) {
+    const cc = el.parentElement.querySelector('.char-count');
+    if (cc) cc.textContent = `${el.value.length} characters`;
+    updateProgress();
+  };
+
+  // Simple Form ID based on TIN + date (customize as you like)
+  window.generateFormId = function() {
+    const tin = (document.getElementById('taxNumber')?.value || '').replace(/\D/g,'');
+    const date = document.getElementById('assessmentDate')?.value || '';
+    if (!tin || !date) return;
+    const id = `FRM32-${tin}-${date.replaceAll('-','')}`;
+    // If you later re-add a hidden input, set it here too:
+    // document.getElementById('formId').value = id;
+    document.getElementById('generatedFormId').textContent = id;
+    document.getElementById('generatedFormIdTr').textContent = id;
+  };
+
+  // Progress calculation: required inputs, required file inputs, and required textareas filled
   function updateProgress() {
-    const form = doc('hseForm');
-    const requiredFields = form.querySelectorAll('[required]');
+    const requiredFields = Array.from(form.querySelectorAll('[required]'));
+    const total = requiredFields.length;
     let filled = 0;
 
     requiredFields.forEach(el => {
       if (el.type === 'file') {
         if (el.files && el.files.length > 0) filled++;
       } else if (el.type === 'checkbox' || el.type === 'radio') {
-        const group = form.querySelectorAll(`input[name="${el.name}"][required]`);
-        const anyChecked = Array.from(group).some(i => i.checked);
-        if (anyChecked) filled++;
+        const name = el.name;
+        const group = form.querySelectorAll(`[name="${CSS.escape(name)}"]`);
+        if (Array.from(group).some(g => g.checked)) filled++;
       } else if (el.value && el.value.trim() !== '') {
         filled++;
       }
     });
 
-    const pct = requiredFields.length ? Math.round((filled / requiredFields.length) * 100) : 0;
-    doc('progressFill').style.width = `${pct}%`;
-    doc('progressText').textContent = `${pct}%`;
+    const pct = total ? Math.round((filled / total) * 100) : 0;
+    progressFill.style.width = pct + '%';
+    progressText.textContent = pct + '%';
   }
-  updateProgress();
-  document.querySelectorAll('#hseForm [required]').forEach(el => {
-    el.addEventListener('change', updateProgress);
-    el.addEventListener('input', updateProgress);
-  });
 
-  // --- Submit handling (async + overlay + success/error) --------------------
-  const form = doc('hseForm');
-  const overlay = doc('loadingOverlay');
-  const success = doc('successMessage');
-  const errorBox = doc('errorMessage');
-  const submitBtn = document.querySelector('.submit-btn');
+  // Initial bind
+  form.addEventListener('input', updateProgress);
+  form.addEventListener('change', updateProgress);
 
+  // Submit with overlay + fetch (keeps native multipart/form-data)
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    // Basic HTML5 validation
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
-    }
-
-    // Show overlay
+    errorMessage.style.display = 'none';
+    successMessage.style.display = 'none';
     overlay.style.display = 'flex';
-    errorBox.style.display = 'none';
-    success.style.display = 'none';
-    submitBtn.disabled = true;
 
     try {
       const fd = new FormData(form);
+      // include a generated id if you want it in the payload
+      const idText = document.getElementById('generatedFormId')?.textContent || '';
+      if (idText) fd.append('form_id', idText);
 
-      // Attach a generated form id (use if you un-comment hidden inputs)
-      const genId = generateFormId();
-      fd.append('generated_form_id', genId);
-      const lang = document.body.classList.contains('turkish') ? 'tr' : 'en';
-      fd.append('ui_lang', lang);
-      fd.append('form-version', '2.0');
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: fd
+      });
 
-      const res = await fetch(form.action, { method: 'POST', body: fd });
-      // If your webhook returns JSON, you can read it; if not, just proceed:
-      let ok = res.ok;
-      let payload = null;
-      try { payload = await res.json(); } catch { /* non-JSON, ignore */ }
-      ok = ok || (payload && (payload.ok || payload.status === 'ok'));
-
-      if (!ok) throw new Error('Bad response');
-
-      // Success UI
-      overlay.style.display = 'none';
-      success.style.display = 'block';
-      (doc('generatedFormId') || {}).textContent = genId;
-      (doc('generatedFormIdTr') || {}).textContent = genId;
-
-      // Optional: scroll to success message
-      success.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-      // Optional: reset the form (comment out if you prefer to keep inputs)
-      // form.reset();
-      // updateProgress();
-      // document.querySelectorAll('.file-info').forEach(i => { i.textContent = lang==='tr'?'Dosya yok':'No file'; i.classList.remove('show'); });
-
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      // If your webhook returns JSON with an id, you can parse & show it:
+      let data = {};
+      try { data = await res.json(); } catch (_) {}
+      if (data.form_id) {
+        document.getElementById('generatedFormId').textContent = data.form_id;
+        document.getElementById('generatedFormIdTr').textContent = data.form_id;
+      }
+      successMessage.style.display = 'block';
+      form.scrollIntoView({behavior: 'smooth'});
+      form.reset();
+      updateProgress();
     } catch (err) {
-      overlay.style.display = 'none';
-      errorBox.style.display = 'block';
-      errorBox.textContent = document.body.classList.contains('turkish')
-        ? '❌ Form gönderilirken hata oluştu. Lütfen tekrar deneyin.'
-        : '❌ Error submitting form. Please try again.';
+      errorMessage.style.display = 'block';
+      console.error('Form submit failed:', err);
     } finally {
-      submitBtn.disabled = false;
+      overlay.style.display = 'none';
     }
   });
 
-  // --- Nice-to-haves ---------------------------------------------------------
-  // Clicking the progress bar text scrolls to the first invalid required field
-  doc('progressText').addEventListener('click', () => {
-    const firstInvalid = form.querySelector('[required]:not([type="hidden"]):invalid, [required][type="file"]:not([data-has-file="1"])');
-    (firstInvalid || form).scrollIntoView({ behavior: 'smooth', block: 'center' });
-  });
-
-  // Mark file inputs that have files (helps some screen readers)
-  document.querySelectorAll('input[type="file"]').forEach(fi => {
-    fi.addEventListener('change', () => fi.setAttribute('data-has-file', fi.files && fi.files.length ? '1' : '0'));
-  });
-
+  // Kick off initial state
+  updateProgress();
 })();
 </script>
 
 
+
 </body>
+
 </html>
