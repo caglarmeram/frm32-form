@@ -4548,6 +4548,31 @@ document.getElementById('verificationForm').addEventListener('submit', function(
   if (parentEl) parentEl.value = parentForm32;
   if (verEl)    verEl.value    = version;
 
+      // ---- Form ID'yi (kısa) üret ve "Contract Number" alanına yaz ----
+  // parent_form32: ör. "FRM32-EKOPET-1234567890-1755159510856"
+  const shortFormId =
+    (parentForm32.match(/(\d{10,})$/) || [])[1] ||              // sondaki 13 hane
+    (parentForm32.includes('-') ? parentForm32.split('-').pop() // son parça
+                                : parentForm32) || '';
+
+  const contractInput = document.getElementById('contract');
+  if (contractInput) {
+    // İSTEDİĞİNİ SEÇ:
+    // 1) Sadece kısa ID:
+    contractInput.value = shortFormId;
+    // 2) Tam FRM32 dizesi yazmak istersen yukarıyı yorum satırı yapıp şunu aç:
+    // contractInput.value = parentForm32;
+
+    contractInput.readOnly = true;                 // kullanıcı değiştirmesin (opsiyonel)
+    contractInput.style.background = '#f1f5f9';    // görsel ipucu (opsiyonel)
+    contractInput.placeholder = 'Auto-filled';
+
+    // Etiketi "Form ID" yap
+    const lbl = document.querySelector('label[for="contract"]');
+    if (lbl) lbl.textContent = 'Form ID';
+  }
+
+    
   // Company alanını linkten gelen contractor ile doldur (ve kilitle)
   const companyInput = document.getElementById('company');
   if (companyInput && contractor) {
