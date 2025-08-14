@@ -4541,6 +4541,21 @@ document.getElementById('verificationForm').addEventListener('submit', function(
   const parentForm32 = params.get('parent_form32') || '';
   const contractor   = params.get('contractor') || '';
   const version      = params.get('version') || '';
+// 🔒 Zorunlu kontrol: FRM-0032'den gelinmemişse FRM-0035 kapat ve yönlendir
+  if (!parentForm32) {
+    alert('Form ID bulunamadı. Lütfen FRM-0032 üzerinden yönlenin.');
+
+    // Her ihtimale karşı sayfadayken gönderimi engelle ve alanları pasifleştir
+    const form = document.querySelector('form');
+    if (form) form.addEventListener('submit', (e) => e.preventDefault());
+    document.querySelectorAll('input, select, textarea, button')
+      .forEach(el => el.disabled = true);
+
+    // Aynı sitedeki FRM-0032 sayfasına gönder
+    // (relatif yol: bu sayfa /frm35/ altındaysa çalışır)
+    location.replace('/frm32/');
+    return;
+  }
 
   // Gizli alanlara yaz
   const parentEl = document.getElementById('parent_form32');
