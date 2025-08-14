@@ -329,7 +329,9 @@
             
             <!-- Netlify Forms için gerekli gizli input -->
             <input type="hidden" name="form-name" value="frm35" />
-            
+            <input type="hidden" id="parent_form32" name="parent_form32" />
+            <input type="hidden" id="version" name="version" />
+
             <!-- Progress ve Success mesajı -->
             <div class="completion-stats">
                 <div class="stat-item">
@@ -4532,5 +4534,41 @@ document.getElementById('verificationForm').addEventListener('submit', function(
     // Netlify form submission otomatik olarak çalışacak
 });
     </script>
+    <script>
+(function () {
+  const params = new URLSearchParams(location.search);
+
+  const parentForm32 = params.get('parent_form32') || '';
+  const contractor   = params.get('contractor') || '';
+  const version      = params.get('version') || '';
+
+  // Gizli alanlara yaz
+  const parentEl = document.getElementById('parent_form32');
+  const verEl    = document.getElementById('version');
+  if (parentEl) parentEl.value = parentForm32;
+  if (verEl)    verEl.value    = version;
+
+  // Company alanını linkten gelen contractor ile doldur (ve kilitle)
+  const companyInput = document.getElementById('company');
+  if (companyInput && contractor) {
+    companyInput.value = contractor;
+    companyInput.readOnly = true;                 // kilitlemek istemezsen bu satırı sil
+    companyInput.style.background = '#f1f5f9';    // opsiyonel görsel ipucu
+    companyInput.title = 'FRM-0032 bağlantısından otomatik dolduruldu';
+  }
+
+  // Tarih-saat alanını "şimdi" ile doldur (opsiyonel)
+  const dt = document.getElementById('datetime');
+  if (dt && !dt.value) {
+    const now = new Date();
+    // YYYY-MM-DDTHH:mm formatı
+    const pad = n => String(n).padStart(2, '0');
+    const local = new Date(now.getTime() - now.getTimezoneOffset()*60000)
+                    .toISOString().slice(0,16);
+    dt.value = local;
+  }
+})();
+</script>
+
 </body>
 </html>
