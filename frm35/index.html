@@ -4607,6 +4607,59 @@ document.getElementById('verificationForm').addEventListener('submit', function(
                     .toISOString().slice(0,16);
     dt.value = local;
   }
+      // ---- GÖNDERİM: n8n webhook'a JSON POST ----
+  const WEBHOOK_URL = 'https://<N8N_HOST>/webhook/frm35_webhook'; // <-- kendi n8n URL'in
+
+  const form = document.querySelector('form');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const fd = new FormData(form);
+    const entries = Object.fromEntries(fd.entries());
+
+    // status değerlerini topla
+    const isStatus = v => ['green','amber','red','na','n/a'].includes(String(v).toLowerCase());
+    const statuses = {};
+    Object.keys(entries).forEach(k => {
+      const v = entries[k];
+      if (isStatus(v)) statuses[k] = String(v).toLowerCase();
+    });
+
+    const TOTAL = 119; // soru sayın
+    if (Object.keys(statuses).length !== TOTAL) {
+      alert(`Lütfen ${TOTAL} sorunun tamamı için bir status seçin.`);
+      return;
+    }
+
+    const payload = {
+      parent_form32: parentForm32,
+      contractor,
+      version,
+      meta: {
+        company: entries.company || '',
+        form_id: document.getElementById('form_id')?.value || '',
+        datetime: entries.datetime || '',
+        locations: entries.locations || ''
+      },
+      total_items: TOTAL,
+      statuses
+    };
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error(await res.text());
+      alert('FRM-0035 gönderildi. Teşekkürler!');
+      // location.href = '/thanks.html'; // istersen yönlendir
+    } catch (err) {
+      console.error(err);
+      alert('Gönderimde hata oluştu. Lütfen tekrar deneyin.');
+    }
+  });
+
 })();
 </script>
 
