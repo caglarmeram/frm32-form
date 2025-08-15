@@ -20,7 +20,7 @@ exports.handler = async (event) => {
 
     const supabase = createClient(
       process.env.SUPABASE_URL,
-      process.env.SUPABASE_SERVICE_ROLE // service role key (UI'da Env Var olarak ekle)
+      process.env.SUPABASE_SERVICE_ROLE_KEY // service role key (UI'da Env Var olarak ekle)
     )
 
     const { data, error } = await supabase
