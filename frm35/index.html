@@ -4534,16 +4534,19 @@ document.getElementById('verificationForm').addEventListener('submit', function(
     // Netlify form submission otomatik olarak çalışacak
 });
     </script>
-    <script>
+<script>
 (function () {
   const params = new URLSearchParams(location.search);
 
   const parentForm32 = params.get('parent_form32') || '';
   const contractor   = params.get('contractor') || '';
-  const version      = params.get('version') || '';
-// 🔒 Zorunlu kontrol: FRM-0032'den gelinmemişse FRM-0035 kapat ve yönlendir
+  const version      = params.get('version') || '1.0';
+
+  console.log('🔍 FRM35 Entry Check:', { parentForm32, contractor, version });
+
+  // 🔒 Zorunlu kontrol: FRM-0032'den gelinmemişse FRM-0035 kapat ve yönlendir
   if (!parentForm32) {
-    alert('Form ID bulunamadı. Lütfen FRM-0032 üzerinden yönlenin.');
+    alert('⚠️ Form ID bulunamadı. Lütfen FRM-0032 üzerinden yönlenin.');
 
     // Her ihtimale karşı sayfadayken gönderimi engelle ve alanları pasifleştir
     const form = document.querySelector('form');
@@ -4551,11 +4554,16 @@ document.getElementById('verificationForm').addEventListener('submit', function(
     document.querySelectorAll('input, select, textarea, button')
       .forEach(el => el.disabled = true);
 
-    // Aynı sitedeki FRM-0032 sayfasına gönder
-    // (relatif yol: bu sayfa /frm35/ altındaysa çalışır)
-    location.replace('/frm32/');
+    // 3 saniye bekle, sonra FRM-0032'ye yönlendir
+    setTimeout(() => {
+      const baseURL = window.location.origin;
+      window.location.replace(`${baseURL}/frm32/`);
+    }, 3000);
+    
     return;
   }
+
+  console.log('✅ Valid entry from FRM32:', parentForm32);
 
   // Gizli alanlara yaz
   const parentEl = document.getElementById('parent_form32');
@@ -4563,7 +4571,7 @@ document.getElementById('verificationForm').addEventListener('submit', function(
   if (parentEl) parentEl.value = parentForm32;
   if (verEl)    verEl.value    = version;
 
-      // ---- Form ID'yi (kısa) üret ve "Contract Number" alanına yaz ----
+  // ---- Form ID'yi (kısa) üret ve "Contract Number" alanına yaz ----
   // parent_form32: ör. "FRM32-EKOPET-1234567890-1755159510856"
   const shortFormId =
     (parentForm32.match(/(\d{10,})$/) || [])[1] ||              // sondaki 13 hane
@@ -4572,28 +4580,22 @@ document.getElementById('verificationForm').addEventListener('submit', function(
 
   const contractInput = document.getElementById('contract');
   if (contractInput) {
-    // İSTEDİĞİNİ SEÇ:
-    // 1) Sadece kısa ID:
     contractInput.value = shortFormId;
-    // 2) Tam FRM32 dizesi yazmak istersen yukarıyı yorum satırı yapıp şunu aç:
-    // contractInput.value = parentForm32;
-
-    contractInput.readOnly = true;                 // kullanıcı değiştirmesin (opsiyonel)
-    contractInput.style.background = '#f1f5f9';    // görsel ipucu (opsiyonel)
-    contractInput.placeholder = 'Auto-filled';
+    contractInput.readOnly = true;
+    contractInput.style.background = '#f1f5f9';
+    contractInput.placeholder = 'Auto-filled from FRM32';
 
     // Etiketi "Form ID" yap
     const lbl = document.querySelector('label[for="contract"]');
-    if (lbl) lbl.textContent = 'Form ID';
+    if (lbl) lbl.textContent = 'Form ID (from FRM32)';
   }
-
     
   // Company alanını linkten gelen contractor ile doldur (ve kilitle)
   const companyInput = document.getElementById('company');
   if (companyInput && contractor) {
-    companyInput.value = contractor;
-    companyInput.readOnly = true;                 // kilitlemek istemezsen bu satırı sil
-    companyInput.style.background = '#f1f5f9';    // opsiyonel görsel ipucu
+    companyInput.value = decodeURIComponent(contractor);
+    companyInput.readOnly = true;
+    companyInput.style.background = '#f1f5f9';
     companyInput.title = 'FRM-0032 bağlantısından otomatik dolduruldu';
   }
 
@@ -4601,64 +4603,103 @@ document.getElementById('verificationForm').addEventListener('submit', function(
   const dt = document.getElementById('datetime');
   if (dt && !dt.value) {
     const now = new Date();
-    // YYYY-MM-DDTHH:mm formatı
     const pad = n => String(n).padStart(2, '0');
     const local = new Date(now.getTime() - now.getTimezoneOffset()*60000)
                     .toISOString().slice(0,16);
     dt.value = local;
   }
-      // ---- GÖNDERİM: n8n webhook'a JSON POST ----
-  const WEBHOOK_URL = 'https://9tml6o6w.rpcld.cc/webhook/submit-frm35'; // <-- kendi n8n URL'in
+
+  // ---- GÖNDERİM: n8n webhook'a JSON POST ----
+  const WEBHOOK_URL = 'https://9tml6o6w.rpcld.cc/webhook/973446dd-15da-4f56-a067-79119d94ba3d'; // FRM35 webhook URL
 
   const form = document.querySelector('form');
+  if (!form) {
+    console.error('❌ Form element not found!');
+    return;
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const fd = new FormData(form);
     const entries = Object.fromEntries(fd.entries());
 
-    // status değerlerini topla
+    // Status değerlerini topla
     const isStatus = v => ['green','amber','red','na','n/a'].includes(String(v).toLowerCase());
     const statuses = {};
+    let statusCount = 0;
+    
     Object.keys(entries).forEach(k => {
       const v = entries[k];
-      if (isStatus(v)) statuses[k] = String(v).toLowerCase();
+      if (isStatus(v)) {
+        statuses[k] = String(v).toLowerCase();
+        statusCount++;
+      }
     });
 
     const TOTAL = 119; // soru sayın
-    if (Object.keys(statuses).length !== TOTAL) {
-      alert(`Lütfen ${TOTAL} sorunun tamamı için bir status seçin.`);
+    if (statusCount !== TOTAL) {
+      alert(`⚠️ Lütfen ${TOTAL} sorunun tamamı için bir status seçin. (Şu an: ${statusCount})`);
       return;
     }
 
+    // Body için payload hazırla
     const payload = {
       parent_form32: parentForm32,
-      contractor,
-      version,
-      meta: {
-        company: entries.company || '',
-        form_id: document.getElementById('form_id')?.value || '',
-        datetime: entries.datetime || '',
-        locations: entries.locations || ''
-      },
+      contractor_name: decodeURIComponent(contractor),
+      invite_token: 'frm35_generated_' + Date.now(),
+      
+      // Meta bilgiler
+      company: entries.company || '',
+      datetime: entries.datetime || '',
+      locations: entries.locations || '',
+      
+      // Status verileri
       total_items: TOTAL,
-      statuses
+      statuses: statuses,
+      
+      // Submission info
+      submission_timestamp: new Date().toISOString(),
+      form_version: version
     };
 
+    console.log('📤 Sending FRM35 data:', payload);
+
     try {
+      // Loading göster
+      document.body.style.cursor = 'wait';
+      
       const res = await fetch(WEBHOOK_URL, {
         method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify(payload)
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ body: payload }) // n8n webhook format
       });
-      if (!res.ok) throw new Error(await res.text());
-      alert('FRM-0035 gönderildi. Teşekkürler!');
-      // location.href = '/thanks.html'; // istersen yönlendir
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`HTTP ${res.status}: ${errorText}`);
+      }
+      
+      const result = await res.json();
+      console.log('✅ FRM35 submitted successfully:', result);
+      
+      alert('✅ FRM-0035 başarıyla gönderildi! Teşekkürler.');
+      
+      // Form'u temizle
+      form.reset();
+      
     } catch (err) {
-      console.error(err);
-      alert('Gönderimde hata oluştu. Lütfen tekrar deneyin.');
+      console.error('❌ FRM35 submission error:', err);
+      alert(`❌ Gönderimde hata oluştu: ${err.message}\n\nLütfen tekrar deneyin.`);
+    } finally {
+      document.body.style.cursor = 'default';
     }
   });
+
+  console.log('🚀 FRM35 form ready for submission');
 
 })();
 </script>
