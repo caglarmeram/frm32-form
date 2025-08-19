@@ -4703,6 +4703,24 @@ document.getElementById('verificationForm').addEventListener('submit', function(
 
 })();
 </script>
+<script>
+// Sayfa yüklendikten sonra zorunlu alanları kaldır
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔄 Zorunlu alanlar kaldırılıyor...');
+    
+    document.querySelectorAll('[required]').forEach(element => {
+        element.removeAttribute('required');
+        console.log('Removed required from:', element.name || element.id);
+    });
+    
+    console.log('✅ Tüm zorunlu alanlar kaldırıldı!');
+    
+    // Progress bar güncelleme
+    updateProgress();
+});
+</script>
 
+</body>
+</html>
 </body>
 </html>
