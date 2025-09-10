@@ -3,45 +3,2109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Seçimi</title>
+    <title>FRM-0033 Contractor Pre-Mobilisation Audit</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f0f9ff, #cbebff);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
-        h1 {
-            color: #333;
-            margin-bottom: 40px;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
-        .links {
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 30px;
             display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .lang-btn.active, .lang-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.6);
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .progress-container {
+            background: white;
+            padding: 20px 40px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            background: #e1e5e9;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .basic-info {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #2a5298;
+        }
+
+        .basic-info h3 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
         }
-        a {
-            text-decoration: none;
-            background: #007bff;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 8px;
-            font-size: 18px;
-            transition: background 0.3s ease;
+
+        .form-group {
+            margin-bottom: 20px;
         }
-        a:hover {
-            background: #0056b3;
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        .legend {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #e1e5e9;
+        }
+
+        .legend h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.3em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .status-applicable { background-color: #28a745; }
+        .status-not-applicable { background-color: #6c757d; }
+        .status-provided { background-color: #007bff; }
+        .status-not-provided { background-color: #ffc107; }
+        .status-not-required { background-color: #17a2b8; }
+
+        .section-container {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px;
+            font-size: 1.3em;
+            font-weight: 600;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .checklist-item {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-top: none;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            border-color: #2a5298;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .checklist-item:last-child {
+            border-radius: 0 0 10px 10px;
+        }
+
+        .item-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .item-number {
+            background: #2a5298;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-right: 15px;
+            min-width: 50px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .item-question {
+            flex: 1;
+            font-size: 1.05em;
+            font-weight: 500;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .item-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 2fr;
+            gap: 15px;
+            align-items: start;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-label {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .status-select select {
+            appearance: none;
+            background: white url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") no-repeat right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        .comments-textarea {
+            resize: vertical;
+            min-height: 60px;
+            font-family: inherit;
+        }
+
+        .submit-section {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .completion-stats {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e1e5e9;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #2a5298;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .lang-en { display: block; }
+        .lang-tr { display: none; }
+        
+        body.turkish .lang-en { display: none; }
+        body.turkish .lang-tr { display: block; }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .item-controls {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .language-selector {
+                position: relative;
+                top: auto;
+                right: auto;
+                justify-content: center;
+                margin-top: 15px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Form Seçimi</h1>
-    <div class="links">
-        <a href="frm32/">FRM-0032 — HSE Capability Assessment</a>
-        <a href="frm35/">FRM-0035 — Site Verification Audit</a>
+    <div class="container">
+        <div class="header">
+            <div class="language-selector">
+                <button class="lang-btn active" onclick="setLanguage('en')">English</button>
+                <button class="lang-btn" onclick="setLanguage('tr')">Türkçe</button>
+            </div>
+            <h1>
+                <span class="lang-en">Contractor Pre-Mobilisation Audit</span>
+                <span class="lang-tr">Yüklenici Ön-Mobilizasyon Denetimi</span>
+            </h1>
+            <p class="lang-en">FRM-0033: Complete HSE Assessment Checklist</p>
+            <p class="lang-tr">FRM-0033: Kapsamlı İSGÇ Değerlendirme Kontrol Listesi</p>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-text">
+                <span class="lang-en">Assessment Progress</span>
+                <span class="lang-tr">Değerlendirme İlerlemesi</span>
+                <span id="progressText">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <form class="form-container" id="frm33Form" method="POST" action="#" enctype="multipart/form-data">
+            <input type="hidden" name="form-name" value="frm33" />
+            <input type="hidden" name="form-version" value="1.0" />
+
+            <div class="success-message" id="successMessage">
+                <span class="lang-en">✅ Assessment submitted successfully! You will receive confirmation via email.</span>
+                <span class="lang-tr">✅ Değerlendirme başarıyla gönderildi! E-posta ile onay alacaksınız.</span>
+            </div>
+
+            <!-- Basic Information -->
+            <div class="basic-info">
+                <h3>
+                    <span class="lang-en">Contract Information</span>
+                    <span class="lang-tr">Sözleşme Bilgileri</span>
+                </h3>
+                <div class="info-grid">
+                    <div class="form-group">
+                        <label>
+                            <span class="lang-en">Contractor <span class="required">*</span></span>
+                            <span class="lang-tr">Yüklenici <span class="required">*</span></span>
+                        </label>
+                        <input type="text" id="contractor" name="contractor" required>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span class="lang-en">Contract Name <span class="required">*</span></span>
+                            <span class="lang-tr">Sözleşme Adı <span class="required">*</span></span>
+                        </label>
+                        <input type="text" id="contractName" name="contract_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span class="lang-en">Project Lead <span class="required">*</span></span>
+                            <span class="lang-tr">Proje Lideri <span class="required">*</span></span>
+                        </label>
+                        <input type="text" id="projectLead" name="project_lead" required>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span class="lang-en">Pre-Mobilisation Checklist Prepared By <span class="required">*</span></span>
+                            <span class="lang-tr">Ön-Mobilizasyon Kontrol Listesini Hazırlayan <span class="required">*</span></span>
+                        </label>
+                        <input type="text" id="preparedBy" name="prepared_by" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress and Stats -->
+            <div class="completion-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="completedCount">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalCount">27</div>
+                    <div class="stat-label">Total Items</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="completionPercent">0%</div>
+                    <div class="stat-label">Progress</div>
+                </div>
+            </div>
+
+            <!-- Status Legend -->
+            <div class="legend">
+                <h3>
+                    <span class="lang-en">Assessment Criteria</span>
+                    <span class="lang-tr">Değerlendirme Kriterleri</span>
+                </h3>
+                <div class="legend-item">
+                    <div class="status-indicator status-applicable"></div>
+                    <span>
+                        <strong class="lang-en">Applicable:</strong>
+                        <strong class="lang-tr">Uygulanabilir:</strong>
+                        <span class="lang-en">This requirement applies to this contract</span>
+                        <span class="lang-tr">Bu gereklilik bu sözleşme için geçerlidir</span>
+                    </span>
+                </div>
+                <div class="legend-item">
+                    <div class="status-indicator status-not-applicable"></div>
+                    <span>
+                        <strong class="lang-en">Not Applicable:</strong>
+                        <strong class="lang-tr">Uygulanamaz:</strong>
+                        <span class="lang-en">This requirement does not apply to this contract</span>
+                        <span class="lang-tr">Bu gereklilik bu sözleşme için geçerli değildir</span>
+                    </span>
+                </div>
+                <div class="legend-item">
+                    <div class="status-indicator status-provided"></div>
+                    <span>
+                        <strong class="lang-en">Provided:</strong>
+                        <strong class="lang-tr">Sağlandı:</strong>
+                        <span class="lang-en">Guidelines have been provided</span>
+                        <span class="lang-tr">Kılavuzlar sağlanmıştır</span>
+                    </span>
+                </div>
+                <div class="legend-item">
+                    <div class="status-indicator status-not-provided"></div>
+                    <span>
+                        <strong class="lang-en">Not Provided:</strong>
+                        <strong class="lang-tr">Sağlanmadı:</strong>
+                        <span class="lang-en">Guidelines have not been provided</span>
+                        <span class="lang-tr">Kılavuzlar sağlanmamıştır</span>
+                    </span>
+                </div>
+                <div class="legend-item">
+                    <div class="status-indicator status-not-required"></div>
+                    <span>
+                        <strong class="lang-en">Not Required:</strong>
+                        <strong class="lang-tr">Gerekli Değil:</strong>
+                        <span class="lang-en">Guidelines are not required for this item</span>
+                        <span class="lang-tr">Bu madde için kılavuz gerekli değildir</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Section 1: HSE Management System -->
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="lang-en">1. HSE Management System</span>
+                    <span class="lang-tr">1. İSGÇ Yönetim Sistemi</span>
+                </div>
+
+                <!-- Item 1.1 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">1.1</div>
+                        <div class="item-question">
+                            <span class="lang-en">IOGP Assessment / Gap-Closure-Plan progress</span>
+                            <span class="lang-tr">IOGP Değerlendirmesi / Boşluk-Kapatma-Plan ilerlemesi</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_1_1" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_1_1" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_1_1">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_1_1" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 1.2 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">1.2</div>
+                        <div class="item-question">
+                            <span class="lang-en">Contract HSE Plan (Applicable to High Risk Contracts - Contract HSE Plans should describe how the Contractor works underneath, and interfaces with the SOCAR HSE Management System)</span>
+                            <span class="lang-tr">Sözleşme İSGÇ Planı (Yüksek Riskli Sözleşmeler için geçerli - Sözleşme İSGÇ Planları, Yüklenicinin SOCAR İSGÇ Yönetim Sistemi altında nasıl çalıştığını ve onunla nasıl arayüz oluşturduğunu açıklamalıdır)</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_1_2" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_1_2" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_1_2">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_1_2" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 1.3 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">1.3</div>
+                        <div class="item-question">
+                            <span class="lang-en">Project Risk Assessment - Scope Specific</span>
+                            <span class="lang-tr">Proje Risk Değerlendirmesi - Kapsam Özel</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_1_3" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_1_3" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_1_3">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_1_3" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 1.4 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">1.4</div>
+                        <div class="item-question">
+                            <span class="lang-en">Subcontractor Management procedure/process (also including the environment)</span>
+                            <span class="lang-tr">Alt yüklenici Yönetim prosedürü/süreci (çevreyi de içerir)</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_1_4" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_1_4" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_1_4">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_1_4" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                  <!-- Item 1.5 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">1.5</div>
+                        <div class="item-question">
+                            <span class="lang-en">Monthly HSE Report template shared</span>
+                            <span class="lang-tr">Aylık İSGÇ Rapor şablonu paylaşıldı</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_1_5" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_1_5" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_1_5">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_1_5" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 1.6 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">1.6</div>
+                        <div class="item-question">
+                            <span class="lang-en">Incident Reporting Template shared</span>
+                            <span class="lang-tr">Olay Raporlama Şablonu paylaşıldı</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_1_6" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_1_6" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_1_6">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_1_6" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 1.7 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">1.7</div>
+                        <div class="item-question">
+                            <span class="lang-en">Copy of Identification & Suggestion Template</span>
+                            <span class="lang-tr">Tanımlama ve Öneri Şablonu Kopyası</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_1_7" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_1_7" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_1_7">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_1_7" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 1.8 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">1.8</div>
+                        <div class="item-question">
+                            <span class="lang-en">Kick-off meeting completed</span>
+                            <span class="lang-tr">Başlangıç toplantısı tamamlandı</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_1_8" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_1_8" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_1_8">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_1_8" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Road Transport & Journey Management -->
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="lang-en">2. Road Transport & Journey Management</span>
+                    <span class="lang-tr">2. Karayolu Taşımacılığı ve Yolculuk Yönetimi</span>
+                </div>
+
+                <!-- Item 2.1 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">2.1</div>
+                        <div class="item-question">
+                            <span class="lang-en">Driver and Vehicle List (Applicable if Contractor has their own vehicles and drivers)</span>
+                            <span class="lang-tr">Sürücü ve Araç Listesi (Yüklenicinin kendi araçları ve sürücüleri varsa geçerlidir)</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_2_1" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_2_1" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_2_1">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_2_1" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2.2 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">2.2</div>
+                        <div class="item-question">
+                            <span class="lang-en">Maintenance Records and Schedule (Applicable if Contractor has their own vehicles and drivers)</span>
+                            <span class="lang-tr">Bakım Kayıtları ve Programı (Yüklenicinin kendi araçları ve sürücüleri varsa geçerlidir)</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_2_2" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_2_2" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_2_2">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_2_2" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Medical Emergency Response -->
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="lang-en">3. Medical Emergency Response</span>
+                    <span class="lang-tr">3. Tıbbi Acil Durum Müdahalesi</span>
+                </div>
+
+                <!-- Item 3.1 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">3.1</div>
+                        <div class="item-question">
+                            <span class="lang-en">Emergency Response Plan</span>
+                            <span class="lang-tr">Acil Durum Müdahale Planı</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_3_1" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_3_1" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_3_1">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_3_1" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 3.2 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">3.2</div>
+                        <div class="item-question">
+                            <span class="lang-en">Details of Occupational Physician / Medical Staff / First Aiders</span>
+                            <span class="lang-tr">Meslek Hekimi / Tıbbi Personel / İlk Yardımcılar Detayları</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_3_2" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_3_2" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_3_2">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_3_2" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 3.3 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">3.3</div>
+                        <div class="item-question">
+                            <span class="lang-en">Fitness to Work Certificates</span>
+                            <span class="lang-tr">İşe Uygunluk Sertifikaları</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_3_3" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_3_3" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_3_3">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_3_3" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Organisation & Resources -->
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="lang-en">4. Organisation & Resources</span>
+                    <span class="lang-tr">4. Organizasyon ve Kaynaklar</span>
+                </div>
+
+                <!-- Item 4.1 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">4.1</div>
+                        <div class="item-question">
+                            <span class="lang-en">Project Manager CV</span>
+                            <span class="lang-tr">Proje Müdürü Özgeçmişi</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_4_1" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_4_1" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_4_1">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_4_1" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 4.2 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">4.2</div>
+                        <div class="item-question">
+                            <span class="lang-en">HSE Manager CV</span>
+                            <span class="lang-tr">İSGÇ Müdürü Özgeçmişi</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_4_2" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_4_2" onchange="updateProgress()">
+                                <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_4_2">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_4_2" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Item 4.3 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">4.3</div>
+                        <div class="item-question">
+                            <span class="lang-en">HSE Team Organisation & Contacts</span>
+                            <span class="lang-tr">İSGÇ Takım Organizasyonu ve İletişim</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_4_3" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_4_3" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_4_3">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_4_3" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 4.4 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">4.4</div>
+                        <div class="item-question">
+                            <span class="lang-en">Project Organisation Chart</span>
+                            <span class="lang-tr">Proje Organizasyon Şeması</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_4_4" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_4_4" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_4_4">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_4_4" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 4.5 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">4.5</div>
+                        <div class="item-question">
+                            <span class="lang-en">Training Matrix</span>
+                            <span class="lang-tr">Eğitim Matrisi</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_4_5" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_4_5" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_4_5">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_4_5" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 4.6 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">4.6</div>
+                        <div class="item-question">
+                            <span class="lang-en">Annual Training Plan</span>
+                            <span class="lang-tr">Yıllık Eğitim Planı</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_4_6" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_4_6" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_4_6">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_4_6" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 4.7 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">4.7</div>
+                        <div class="item-question">
+                            <span class="lang-en">HSE Training Records</span>
+                            <span class="lang-tr">İSGÇ Eğitim Kayıtları</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_4_7" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_4_7" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_4_7">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_4_7" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Key Personnel -->
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="lang-en">5. Key Personnel</span>
+                    <span class="lang-tr">5. Anahtar Personel</span>
+                </div>
+
+                <!-- Item 5.1 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">5.1</div>
+                        <div class="item-question">
+                            <span class="lang-en">Lifting & Hoisting Supervisors' CV/Certificate</span>
+                            <span class="lang-tr">Kaldırma ve Yükseltme Süpervizörlerinin CV/Sertifikaları</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_5_1" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_5_1" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_5_1">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_5_1" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 5.2 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">5.2</div>
+                        <div class="item-question">
+                            <span class="lang-en">Riggers' CV/Certificate</span>
+                            <span class="lang-tr">Rigging Uzmanlarının CV/Sertifikaları</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_5_2" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_5_2" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_5_2">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_5_2" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 5.3 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">5.3</div>
+                        <div class="item-question">
+                            <span class="lang-en">Crane Operators' CV/Certificate</span>
+                            <span class="lang-tr">Vinç Operatörlerinin CV/Sertifikaları</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_5_3" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_5_3" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_5_3">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_5_3" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 5.4 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">5.4</div>
+                        <div class="item-question">
+                            <span class="lang-en">Professional Competency Certificates</span>
+                            <span class="lang-tr">Mesleki Yeterlilik Sertifikaları</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_5_4" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_5_4" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_5_4">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_5_4" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 5.5 -->
+                <div class="checklist-item">
+                    <div class="item-header">
+                        <div class="item-number">5.5</div>
+                        <div class="item-question">
+                            <span class="lang-en">HSE Specialist Legal Contract</span>
+                            <span class="lang-tr">İSGÇ Uzmanı Yasal Sözleşmesi</span>
+                        </div>
+                    </div>
+                    <div class="item-controls">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken for this Contract?</span>
+                                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="undertaken_5_5" required onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <div class="status-select">
+                                <select name="guideline_5_5" onchange="updateProgress()">
+                                    <option value="">Select</option>
+                                    <option value="Provided">Provided / Sağlandı</option>
+                                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_5_5">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_5_5" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 6: Worksite Hazard Management -->
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="lang-en">6. Worksite Hazard Management</span>
+                    <span class="lang-tr">6. İş Sahası Tehlike Yönetimi</span>
+                </div>
+
+<!-- Item 6.1 -->
+<div class="checklist-item">
+    <div class="item-header">
+        <div class="item-number">6.1</div>
+        <div class="item-question">
+            <span class="lang-en">Annual HSE Activity Plan</span>
+            <span class="lang-tr">Yıllık İSG Faaliyet Planı</span>
+        </div>
     </div>
-</body>
+    <div class="item-controls">
+        <div class="control-group">
+            <div class="control-label">
+                <span class="lang-en">Undertaken for this Contract?</span>
+                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+            </div>
+            <div class="status-select">
+                <select name="undertaken_6_1" required onchange="updateProgress()">
+                    <option value="">Select</option>
+                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="control-label">
+                <span class="lang-en">Guideline</span>
+                <span class="lang-tr">Kılavuz</span>
+            </div>
+            <div class="status-select">
+                <select name="guideline_6_1" onchange="updateProgress()">
+                    <option value="">Select</option>
+                    <option value="Provided">Provided / Sağlandı</option>
+                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="control-label">
+                <span class="lang-en">Target Date</span>
+                <span class="lang-tr">Hedef Tarih</span>
+            </div>
+            <input type="date" name="target_date_6_1">
+        </div>
+        <div class="control-group">
+            <div class="control-label">
+                <span class="lang-en">Comments</span>
+                <span class="lang-tr">Yorumlar</span>
+            </div>
+            <textarea name="comments_6_1" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+        </div>
+    </div>
+</div>
+<!-- Item 6.2 -->
+<div class="checklist-item">
+    <div class="item-header">
+        <div class="item-number">6.2</div>
+        <div class="item-question">
+            <span class="lang-en">PPE Inspection & Delivery Forms</span>
+            <span class="lang-tr">KKD Muayene & Teslim Formları</span>
+        </div>
+    </div>
+    <div class="item-controls">
+        <div class="control-group">
+            <div class="control-label">
+                <span class="lang-en">Undertaken for this Contract?</span>
+                <span class="lang-tr">Bu Sözleşme için Üstlenildi mi?</span>
+            </div>
+            <div class="status-select">
+                <select name="undertaken_6_2" required onchange="updateProgress()">
+                    <option value="">Select</option>
+                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="control-label">
+                <span class="lang-en">Guideline</span>
+                <span class="lang-tr">Kılavuz</span>
+            </div>
+            <div class="status-select">
+                <select name="guideline_6_2" onchange="updateProgress()">
+                    <option value="">Select</option>
+                    <option value="Provided">Provided / Sağlandı</option>
+                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                    <option value="Not Required">Not Required / Gerekli Değil</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="control-label">
+                <span class="lang-en">Target Date</span>
+                <span class="lang-tr">Hedef Tarih</span>
+            </div>
+            <input type="date" name="target_date_6_2">
+        </div>
+        <div class="control-group">
+            <div class="control-label">
+                <span class="lang-en">Comments</span>
+                <span class="lang-tr">Yorumlar</span>
+            </div>
+            <textarea name="comments_6_2" class="comments-textarea" placeholder="Additional comments / Ek yorumlar"></textarea>
+        </div>
+    </div>
+</div>
+<!-- Submit Section -->
+            <div class="submit-section">
+                <div class="completion-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="finalCompletedCount">0</div>
+                        <div class="stat-label">
+                            <span class="lang-en">Completed</span>
+                            <span class="lang-tr">Tamamlandı</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="finalTotalCount">27</div>
+                        <div class="stat-label">
+                            <span class="lang-en">Total Items</span>
+                            <span class="lang-tr">Toplam Madde</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="finalCompletionPercent">0%</div>
+                        <div class="stat-label">
+                            <span class="lang-en">Progress</span>
+                            <span class="lang-tr">İlerleme</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <span class="lang-en">Submit Assessment</span>
+                    <span class="lang-tr">Değerlendirmeyi Gönder</span>
+                </button>
+            </div>
+        </form>
+        </div>
+        <script>
+        function setLanguage(lang) {
+            const body = document.body;
+            const langBtns = document.querySelectorAll('.lang-btn');
+            
+            if (lang === 'tr') {
+                body.classList.add('turkish');
+            } else {
+                body.classList.remove('turkish');
+            }
+            
+            langBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function updateProgress() {
+            const totalItems = 27;
+            const undertakenSelects = document.querySelectorAll('select[name^="undertaken_"]');
+            let completed = 0;
+
+            undertakenSelects.forEach(select => {
+                if (select.value !== '') {
+                    completed++;
+                }
+            });
+
+            const percentage = Math.round((completed / totalItems) * 100);
+
+            // Update progress bar
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = percentage + '%';
+            
+            // Update stats
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('completionPercent').textContent = percentage + '%';
+            
+            // Update final stats if they exist
+            const finalCompleted = document.getElementById('finalCompletedCount');
+            const finalPercent = document.getElementById('finalCompletionPercent');
+            if (finalCompleted) finalCompleted.textContent = completed;
+            if (finalPercent) finalPercent.textContent = percentage + '%';
+        }
+
+        // Form submission handler
+        document.getElementById('frm33Form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+    </body>
 </html>
