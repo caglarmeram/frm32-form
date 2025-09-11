@@ -27,7 +27,7 @@
             box-shadow: 0 25px 50px rgba(0,0,0,0.15);
             padding: 50px;
             text-align: center;
-            max-width: 800px;
+            max-width: 1000px;
             width: 100%;
         }
 
@@ -142,17 +142,52 @@
         }
 
         .logo {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
-            border-radius: 50%;
             margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            flex-direction: column;
+        }
+
+        .logo-main {
+            font-size: 2.5em;
             font-weight: 700;
-            font-size: 1.5em;
+            color: #2a5298;
+            letter-spacing: -2px;
+            margin-bottom: 5px;
+        }
+
+        .logo-subtitle {
+            font-size: 1.2em;
+            color: #1e3c72;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .logo-dots {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot-orange {
+            background-color: #ff7f50;
+        }
+
+        .dot-blue1 {
+            background-color: #4a90e2;
+        }
+
+        .dot-blue2 {
+            background-color: #2a5298;
         }
 
         @media (max-width: 768px) {
@@ -172,6 +207,14 @@
 
             .form-card {
                 padding: 25px 15px;
+            }
+
+            .logo-main {
+                font-size: 2em;
+            }
+
+            .logo-subtitle {
+                font-size: 1em;
             }
         }
 
@@ -200,14 +243,12 @@
     <div class="container">
         <div class="header">
             <div class="logo">
-                <div>
-                    <div class="logo-text">SnSD</div>
-                    <div class="logo-subtitle">Consultants</div>
-                    <div class="logo-dots">
-                        <div class="dot dot-orange"></div>
-                        <div class="dot dot-blue1"></div>
-                        <div class="dot dot-blue2"></div>
-                    </div>
+                <div class="logo-main">SnSD</div>
+                <div class="logo-subtitle">Consultants</div>
+                <div class="logo-dots">
+                    <div class="dot dot-orange"></div>
+                    <div class="dot dot-blue1"></div>
+                    <div class="dot dot-blue2"></div>
                 </div>
             </div>
             <h1>HSE Assessment Forms</h1>
@@ -228,6 +269,14 @@
                     <div class="form-number">FRM-33</div>
                     <div class="form-title">Pre-Mobilisation Audit</div>
                     <div class="form-description">Comprehensive contractor evaluation before project initiation</div>
+                </div>
+            </a>
+
+            <a href="frm34/" class="form-card">
+                <div class="card-content">
+                    <div class="form-number">FRM-34</div>
+                    <div class="form-title">Risk Assessment</div>
+                    <div class="form-description">Detailed hazard identification and risk evaluation framework</div>
                 </div>
             </a>
 
