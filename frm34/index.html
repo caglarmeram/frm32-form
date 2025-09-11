@@ -1,0 +1,1993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FMR-34 Contractor Mobilisation Audit Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .lang-btn.active, .lang-btn:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.6);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.2em;
+        }
+
+        .progress-container {
+            background: white;
+            padding: 20px 40px;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #2a5298;
+        }
+
+        .metric-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #2a5298;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            background: #e1e5e9;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #28a745, #20c997);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .company-info {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #2a5298;
+        }
+
+        .company-info h3 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .form-group input, 
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        .section-title {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px;
+            margin: 30px 0 20px 0;
+            border-radius: 10px;
+            font-size: 1.3em;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .audit-item {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .audit-item:hover {
+            border-color: #2a5298;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .item-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .item-number {
+            background: #2a5298;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            margin-right: 15px;
+            flex-shrink: 0;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .item-title {
+            flex: 1;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .item-description {
+            font-size: 0.95em;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .item-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .controls-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .controls-bottom {
+            display: grid;
+            grid-template-columns: 150px 200px 2fr;
+            gap: 15px;
+            align-items: start;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-label {
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        select {
+            appearance: none;
+            background: white url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") no-repeat right 12px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        .status-1 { background-color: #d4edda; border-color: #28a745; }
+        .status-2 { background-color: #fff3cd; border-color: #ffc107; }
+        .status-3 { background-color: #f8d7da; border-color: #dc3545; }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+            font-family: inherit;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        .submit-section {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        /* Language specific content */
+        .lang-en { display: block; }
+        .lang-tr { display: none; }
+        
+        body.turkish .lang-en { display: none; }
+        body.turkish .lang-tr { display: block; }
+
+        @media (max-width: 768px) {
+            .controls-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .controls-bottom {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .dashboard {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="language-selector">
+                <button class="lang-btn active" onclick="setLanguage('en')">English</button>
+                <button class="lang-btn" onclick="setLanguage('tr')">Türkçe</button>
+            </div>
+            <h1>
+                <span class="lang-en">Contractor Mobilisation Audit</span>
+                <span class="lang-tr">Yüklenici Mobilizasyon Denetimi</span>
+            </h1>
+            <p class="lang-en">FMR-34: Pre-Contract Assessment and Readiness Evaluation</p>
+            <p class="lang-tr">FMR-34: Sözleşme Öncesi Değerlendirme ve Hazırlık Analizi</p>
+        </div>
+
+        <div class="progress-container">
+            <!-- Dashboard Metrics -->
+            <div class="dashboard">
+                <div class="metric-card">
+                    <div class="metric-value" id="submittedCount">0</div>
+                    <div class="metric-label">
+                        <span class="lang-en">Documents Submitted</span>
+                        <span class="lang-tr">Sunulan Dokümanlar</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="toBeSubmittedCount">0</div>
+                    <div class="metric-label">
+                        <span class="lang-en">To Be Submitted</span>
+                        <span class="lang-tr">Sunulacak Dokümanlar</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="code1Count">0</div>
+                    <div class="metric-label">
+                        <span class="lang-en">Code-1 Approved</span>
+                        <span class="lang-tr">Kod-1 Onaylı</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="code2Count">0</div>
+                    <div class="metric-label">
+                        <span class="lang-en">Code-2 Approved</span>
+                        <span class="lang-tr">Kod-2 Onaylı</span>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="code3Count">0</div>
+                    <div class="metric-label">
+                        <span class="lang-en">Code-3 Rejected</span>
+                        <span class="lang-tr">Kod-3 Reddedilen</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-text">
+                <span class="lang-en">Mobilisation Progress</span>
+                <span class="lang-tr">Mobilizasyon İlerlemesi</span>
+                <span id="progressText">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <form class="form-container" id="mobilisationForm" name="frm34" method="POST" action="https://9tml6o6w.rpcld.cc/webhook/submit-frm34">
+            <input type="hidden" name="form-name" value="frm34" />
+            <input type="hidden" name="form-version" value="1.0" />
+
+            <!-- Company Information -->
+            <div class="company-info">
+                <h3>
+                    <span class="lang-en">Contractor Information</span>
+                    <span class="lang-tr">Yüklenici Bilgileri</span>
+                </h3>
+                <div class="info-grid">
+                    <div class="form-group">
+                        <label>
+                            <span class="lang-en">Contractor Name <span class="required">*</span></span>
+                            <span class="lang-tr">Yüklenici Firma Adı <span class="required">*</span></span>
+                        </label>
+                        <input type="text" name="contractor_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span class="lang-en">Contract Number <span class="required">*</span></span>
+                            <span class="lang-tr">Sözleşme Numarası <span class="required">*</span></span>
+                        </label>
+                        <input type="text" name="contract_number" required>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span class="lang-en">Audit Date <span class="required">*</span></span>
+                            <span class="lang-tr">Denetim Tarihi <span class="required">*</span></span>
+                        </label>
+                        <input type="date" name="audit_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <span class="lang-en">Auditor Name <span class="required">*</span></span>
+                            <span class="lang-tr">Denetçi Adı <span class="required">*</span></span>
+                        </label>
+                        <input type="text" name="auditor_name" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 1: HSE Management System -->
+            <div class="section-title">
+                <span class="lang-en">1. HSE Management System</span>
+                <span class="lang-tr">1. HSE Yönetim Sistemi</span>
+            </div>
+
+            <div class="audit-item">
+                <div class="item-header">
+                    <div class="item-number">1.1</div>
+                    <div class="item-title">
+                        <span class="lang-en">Approved Contract HSE Plan</span>
+                        <span class="lang-tr">Onaylanmış Sözleşme HSE Planı</span>
+                        <div class="item-description">
+                            <span class="lang-en">Applicable to High Risk Contracts - Contract HSE Plans should describe how the Contractor works underneath, and interfaces with the SOCAR HSE Management System</span>
+                            <span class="lang-tr">Yüksek Riskli Sözleşmelere Uygulanabilir - Sözleşme HSE Planları, Yüklenicinin SOCAR HSE Yönetim Sistemi altında nasıl çalıştığını ve arayüz oluşturduğunu açıklamalıdır</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="item-controls">
+                    <div class="controls-row">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken</span>
+                                <span class="lang-tr">Üstlenildi</span>
+                            </div>
+                            <select name="undertaken_1_1" onchange="updateMetrics()">
+                                <option value="">Select / Seçin</option>
+                                <option value="Applicable">Applicable / Uygulanabilir</option>
+                                <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <select name="guideline_1_1" onchange="updateMetrics()">
+                                <option value="">Select / Seçin</option>
+                                <option value="Provided">Provided / Sağlandı</option>
+                                <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                <option value="Not Required">Not Required / Gerekli değil</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Submitted</span>
+                                <span class="lang-tr">Sunuldu</span>
+                            </div>
+                            <select name="submitted_1_1" onchange="updateMetrics()">
+                                <option value="">Select / Seçin</option>
+                                <option value="Yes">Yes / Evet</option>
+                                <option value="No">No / Hayır</option>
+                                <option value="In Progress">In Progress / Devam Ediyor</option>
+                                <option value="N/A">N/A / Uygulanamaz</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Status</span>
+                                <span class="lang-tr">Durum</span>
+                            </div>
+                            <select name="status_1_1" onchange="updateMetrics(); updateItemStyle(this)">
+                                <option value="">Select / Seçin</option>
+                                <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+                                <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+                                <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="controls-bottom">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_1_1">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Responsible Person</span>
+                                <span class="lang-tr">Sorumlu Kişi</span>
+                            </div>
+                            <input type="text" name="responsible_person_1_1" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_1_1" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="audit-item">
+                <div class="item-header">
+                    <div class="item-number">1.2</div>
+                    <div class="item-title">
+                        <span class="lang-en">Subcontractor Audits</span>
+                        <span class="lang-tr">Alt Yüklenici Denetimleri</span>
+                    </div>
+                </div>
+                <div class="item-controls">
+                    <div class="controls-row">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Undertaken</span>
+                                <span class="lang-tr">Üstlenildi</span>
+                            </div>
+                            <select name="undertaken_1_2" onchange="updateMetrics()">
+                                <option value="">Select / Seçin</option>
+                                <option value="Applicable">Applicable / Uygulanabilir</option>
+                                <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Guideline</span>
+                                <span class="lang-tr">Kılavuz</span>
+                            </div>
+                            <select name="guideline_1_2" onchange="updateMetrics()">
+                                <option value="">Select / Seçin</option>
+                                <option value="Provided">Provided / Sağlandı</option>
+                                <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                                <option value="Not Required">Not Required / Gerekli değil</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Submitted</span>
+                                <span class="lang-tr">Sunuldu</span>
+                            </div>
+                            <select name="submitted_1_2" onchange="updateMetrics()">
+                                <option value="">Select / Seçin</option>
+                                <option value="Yes">Yes / Evet</option>
+                                <option value="No">No / Hayır</option>
+                                <option value="In Progress">In Progress / Devam Ediyor</option>
+                                <option value="N/A">N/A / Uygulanamaz</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Status</span>
+                                <span class="lang-tr">Durum</span>
+                            </div>
+                            <select name="status_1_2" onchange="updateMetrics(); updateItemStyle(this)">
+                                <option value="">Select / Seçin</option>
+                                <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+                                <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+                                <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="controls-bottom">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Target Date</span>
+                                <span class="lang-tr">Hedef Tarih</span>
+                            </div>
+                            <input type="date" name="target_date_1_2">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Responsible Person</span>
+                                <span class="lang-tr">Sorumlu Kişi</span>
+                            </div>
+                            <input type="text" name="responsible_person_1_2" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span class="lang-en">Comments</span>
+                                <span class="lang-tr">Yorumlar</span>
+                            </div>
+                            <textarea name="comments_1_2" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1.3 -->
+<div class="audit-item">
+    <div class="item-header">
+        <div class="item-number">1.3</div>
+        <div class="item-title">
+            <span class="lang-en">Monthly HSE Report submitted</span>
+            <span class="lang-tr">Aylık HSE Raporu sunuldu</span>
+        </div>
+    </div>
+    <div class="item-controls">
+        <div class="controls-row">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Undertaken</span>
+                    <span class="lang-tr">Üstlenildi</span>
+                </div>
+                <select name="undertaken_1_3" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Guideline</span>
+                    <span class="lang-tr">Kılavuz</span>
+                </div>
+                <select name="guideline_1_3" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Provided">Provided / Sağlandı</option>
+                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                    <option value="Not Required">Not Required / Gerekli değil</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Submitted</span>
+                    <span class="lang-tr">Sunuldu</span>
+                </div>
+                <select name="submitted_1_3" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Yes">Yes / Evet</option>
+                    <option value="No">No / Hayır</option>
+                    <option value="In Progress">In Progress / Devam Ediyor</option>
+                    <option value="N/A">N/A / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Status</span>
+                    <span class="lang-tr">Durum</span>
+                </div>
+                <select name="status_1_3" onchange="updateMetrics(); updateItemStyle(this)">
+                    <option value="">Select / Seçin</option>
+                    <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+                    <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+                    <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+                </select>
+            </div>
+        </div>
+        <div class="controls-bottom">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Target Date</span>
+                    <span class="lang-tr">Hedef Tarih</span>
+                </div>
+                <input type="date" name="target_date_1_3">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Responsible Person</span>
+                    <span class="lang-tr">Sorumlu Kişi</span>
+                </div>
+                <input type="text" name="responsible_person_1_3" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Comments</span>
+                    <span class="lang-tr">Yorumlar</span>
+                </div>
+                <textarea name="comments_1_3" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section 2: Road Transport & Journey Management -->
+<div class="section-title">
+    <span class="lang-en">2. Road Transport & Journey Management</span>
+    <span class="lang-tr">2. Karayolu Taşımacılığı & Yolculuk Yönetimi</span>
+</div>
+
+<!-- 2.1 -->
+<div class="audit-item">
+    <div class="item-header">
+        <div class="item-number">2.1</div>
+        <div class="item-title">
+            <span class="lang-en">Vehicle & Equipment Inspections</span>
+            <span class="lang-tr">Araç ve Ekipman Denetimleri</span>
+        </div>
+    </div>
+    <div class="item-controls">
+        <div class="controls-row">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Undertaken</span>
+                    <span class="lang-tr">Üstlenildi</span>
+                </div>
+                <select name="undertaken_2_1" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Guideline</span>
+                    <span class="lang-tr">Kılavuz</span>
+                </div>
+                <select name="guideline_2_1" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Provided">Provided / Sağlandı</option>
+                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                    <option value="Not Required">Not Required / Gerekli değil</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Submitted</span>
+                    <span class="lang-tr">Sunuldu</span>
+                </div>
+                <select name="submitted_2_1" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Yes">Yes / Evet</option>
+                    <option value="No">No / Hayır</option>
+                    <option value="In Progress">In Progress / Devam Ediyor</option>
+                    <option value="N/A">N/A / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Status</span>
+                    <span class="lang-tr">Durum</span>
+                </div>
+                <select name="status_2_1" onchange="updateMetrics(); updateItemStyle(this)">
+                    <option value="">Select / Seçin</option>
+                    <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+                    <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+                    <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+                </select>
+            </div>
+        </div>
+        <div class="controls-bottom">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Target Date</span>
+                    <span class="lang-tr">Hedef Tarih</span>
+                </div>
+                <input type="date" name="target_date_2_1">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Responsible Person</span>
+                    <span class="lang-tr">Sorumlu Kişi</span>
+                </div>
+                <input type="text" name="responsible_person_2_1" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Comments</span>
+                    <span class="lang-tr">Yorumlar</span>
+                </div>
+                <textarea name="comments_2_1" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 2.2 -->
+<div class="audit-item">
+    <div class="item-header">
+        <div class="item-number">2.2</div>
+        <div class="item-title">
+            <span class="lang-en">Defensive Driver Training records</span>
+            <span class="lang-tr">Defansif Sürücü Eğitim Kayıtları</span>
+        </div>
+    </div>
+    <div class="item-controls">
+        <div class="controls-row">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Undertaken</span>
+                    <span class="lang-tr">Üstlenildi</span>
+                </div>
+                <select name="undertaken_2_2" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Guideline</span>
+                    <span class="lang-tr">Kılavuz</span>
+                </div>
+                <select name="guideline_2_2" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Provided">Provided / Sağlandı</option>
+                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                    <option value="Not Required">Not Required / Gerekli değil</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Submitted</span>
+                    <span class="lang-tr">Sunuldu</span>
+                </div>
+                <select name="submitted_2_2" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Yes">Yes / Evet</option>
+                    <option value="No">No / Hayır</option>
+                    <option value="In Progress">In Progress / Devam Ediyor</option>
+                    <option value="N/A">N/A / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Status</span>
+                    <span class="lang-tr">Durum</span>
+                </div>
+                <select name="status_2_2" onchange="updateMetrics(); updateItemStyle(this)">
+                    <option value="">Select / Seçin</option>
+                    <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+                    <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+                    <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+                </select>
+            </div>
+        </div>
+        <div class="controls-bottom">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Target Date</span>
+                    <span class="lang-tr">Hedef Tarih</span>
+                </div>
+                <input type="date" name="target_date_2_2">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Responsible Person</span>
+                    <span class="lang-tr">Sorumlu Kişi</span>
+                </div>
+                <input type="text" name="responsible_person_2_2" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Comments</span>
+                    <span class="lang-tr">Yorumlar</span>
+                </div>
+                <textarea name="comments_2_2" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section 3: Medical Emergency Response -->
+<div class="section-title">
+    <span class="lang-en">3. Medical Emergency Response</span>
+    <span class="lang-tr">3. Tıbbi Acil Durum Müdahalesi</span>
+</div>
+
+<!-- 3.1 -->
+<div class="audit-item">
+    <div class="item-header">
+        <div class="item-number">3.1</div>
+        <div class="item-title">
+            <span class="lang-en">Approved Emergency Response Plan</span>
+            <span class="lang-tr">Onaylanmış Acil Durum Müdahale Planı</span>
+        </div>
+    </div>
+    <div class="item-controls">
+        <div class="controls-row">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Undertaken</span>
+                    <span class="lang-tr">Üstlenildi</span>
+                </div>
+                <select name="undertaken_3_1" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Guideline</span>
+                    <span class="lang-tr">Kılavuz</span>
+                </div>
+                <select name="guideline_3_1" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Provided">Provided / Sağlandı</option>
+                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                    <option value="Not Required">Not Required / Gerekli değil</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Submitted</span>
+                    <span class="lang-tr">Sunuldu</span>
+                </div>
+                <select name="submitted_3_1" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Yes">Yes / Evet</option>
+                    <option value="No">No / Hayır</option>
+                    <option value="In Progress">In Progress / Devam Ediyor</option>
+                    <option value="N/A">N/A / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Status</span>
+                    <span class="lang-tr">Durum</span>
+                </div>
+                <select name="status_3_1" onchange="updateMetrics(); updateItemStyle(this)">
+                    <option value="">Select / Seçin</option>
+                    <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+                    <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+                    <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+                </select>
+            </div>
+        </div>
+        <div class="controls-bottom">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Target Date</span>
+                    <span class="lang-tr">Hedef Tarih</span>
+                </div>
+                <input type="date" name="target_date_3_1">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Responsible Person</span>
+                    <span class="lang-tr">Sorumlu Kişi</span>
+                </div>
+                <input type="text" name="responsible_person_3_1" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Comments</span>
+                    <span class="lang-tr">Yorumlar</span>
+                </div>
+                <textarea name="comments_3_1" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3.2 -->
+<div class="audit-item">
+    <div class="item-header">
+        <div class="item-number">3.2</div>
+        <div class="item-title">
+            <span class="lang-en">Designated First Aiders on site (10% of personnel)</span>
+            <span class="lang-tr">Sahada Belirlenen İlkyardımcılar (%10 personel)</span>
+        </div>
+    </div>
+    <div class="item-controls">
+        <div class="controls-row">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Undertaken</span>
+                    <span class="lang-tr">Üstlenildi</span>
+                </div>
+                <select name="undertaken_3_2" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Guideline</span>
+                    <span class="lang-tr">Kılavuz</span>
+                </div>
+                <select name="guideline_3_2" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Provided">Provided / Sağlandı</option>
+                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                    <option value="Not Required">Not Required / Gerekli değil</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Submitted</span>
+                    <span class="lang-tr">Sunuldu</span>
+                </div>
+                <select name="submitted_3_2" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Yes">Yes / Evet</option>
+                    <option value="No">No / Hayır</option>
+                    <option value="In Progress">In Progress / Devam Ediyor</option>
+                    <option value="N/A">N/A / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Status</span>
+                    <span class="lang-tr">Durum</span>
+                </div>
+                <select name="status_3_2" onchange="updateMetrics(); updateItemStyle(this)">
+                    <option value="">Select / Seçin</option>
+                    <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+                    <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+                    <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+                </select>
+            </div>
+        </div>
+        <div class="controls-bottom">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Target Date</span>
+                    <span class="lang-tr">Hedef Tarih</span>
+                </div>
+                <input type="date" name="target_date_3_2">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Responsible Person</span>
+                    <span class="lang-tr">Sorumlu Kişi</span>
+                </div>
+                <input type="text" name="responsible_person_3_2" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Comments</span>
+                    <span class="lang-tr">Yorumlar</span>
+                </div>
+                <textarea name="comments_3_2" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3.3 -->
+<div class="audit-item">
+    <div class="item-header">
+        <div class="item-number">3.3</div>
+        <div class="item-title">
+            <span class="lang-en">Occupational Physician on site</span>
+            <span class="lang-tr">Sahada İş Yeri Hekimi</span>
+        </div>
+    </div>
+    <div class="item-controls">
+        <div class="controls-row">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Undertaken</span>
+                    <span class="lang-tr">Üstlenildi</span>
+                </div>
+                <select name="undertaken_3_3" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Guideline</span>
+                    <span class="lang-tr">Kılavuz</span>
+                </div>
+                <select name="guideline_3_3" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Provided">Provided / Sağlandı</option>
+                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                    <option value="Not Required">Not Required / Gerekli değil</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Submitted</span>
+                    <span class="lang-tr">Sunuldu</span>
+                </div>
+                <select name="submitted_3_3" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Yes">Yes / Evet</option>
+                    <option value="No">No / Hayır</option>
+                    <option value="In Progress">In Progress / Devam Ediyor</option>
+                    <option value="N/A">N/A / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Status</span>
+                    <span class="lang-tr">Durum</span>
+                </div>
+                <select name="status_3_3" onchange="updateMetrics(); updateItemStyle(this)">
+                    <option value="">Select / Seçin</option>
+                    <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+                    <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+                    <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+                </select>
+            </div>
+        </div>
+        <div class="controls-bottom">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Target Date</span>
+                    <span class="lang-tr">Hedef Tarih</span>
+                </div>
+                <input type="date" name="target_date_3_3">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Responsible Person</span>
+                    <span class="lang-tr">Sorumlu Kişi</span>
+                </div>
+                <input type="text" name="responsible_person_3_3" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Comments</span>
+                    <span class="lang-tr">Yorumlar</span>
+                </div>
+                <textarea name="comments_3_3" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section 4: Organisation & Resources -->
+<div class="section-title">
+    <span class="lang-en">4. Organisation & Resources</span>
+    <span class="lang-tr">4. Organizasyon & Kaynaklar</span>
+</div>
+
+<!-- 4.1 -->
+<div class="audit-item">
+    <div class="item-header">
+        <div class="item-number">4.1</div>
+        <div class="item-title">
+            <span class="lang-en">Project Manager mobilised</span>
+            <span class="lang-tr">Proje Yöneticisi görevlendirildi</span>
+        </div>
+    </div>
+    <div class="item-controls">
+        <div class="controls-row">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Undertaken</span>
+                    <span class="lang-tr">Üstlenildi</span>
+                </div>
+                <select name="undertaken_4_1" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Guideline</span>
+                    <span class="lang-tr">Kılavuz</span>
+                </div>
+                <select name="guideline_4_1" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Provided">Provided / Sağlandı</option>
+                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                    <option value="Not Required">Not Required / Gerekli değil</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Submitted</span>
+                    <span class="lang-tr">Sunuldu</span>
+                </div>
+                <select name="submitted_4_1" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Yes">Yes / Evet</option>
+                    <option value="No">No / Hayır</option>
+                    <option value="In Progress">In Progress / Devam Ediyor</option>
+                    <option value="N/A">N/A / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Status</span>
+                    <span class="lang-tr">Durum</span>
+                </div>
+                <select name="status_4_1" onchange="updateMetrics(); updateItemStyle(this)">
+                    <option value="">Select / Seçin</option>
+                    <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+                    <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+                    <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+                </select>
+            </div>
+        </div>
+        <div class="controls-bottom">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Target Date</span>
+                    <span class="lang-tr">Hedef Tarih</span>
+                </div>
+                <input type="date" name="target_date_4_1">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Responsible Person</span>
+                    <span class="lang-tr">Sorumlu Kişi</span>
+                </div>
+                <input type="text" name="responsible_person_4_1" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Comments</span>
+                    <span class="lang-tr">Yorumlar</span>
+                </div>
+                <textarea name="comments_4_1" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4.2 -->
+<div class="audit-item">
+    <div class="item-header">
+        <div class="item-number">4.2</div>
+        <div class="item-title">
+            <span class="lang-en">HSE Manager mobilised</span>
+            <span class="lang-tr">HSE Yöneticisi görevlendirildi</span>
+        </div>
+    </div>
+    <div class="item-controls">
+        <div class="controls-row">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Undertaken</span>
+                    <span class="lang-tr">Üstlenildi</span>
+                </div>
+                <select name="undertaken_4_2" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Guideline</span>
+                    <span class="lang-tr">Kılavuz</span>
+                </div>
+                <select name="guideline_4_2" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Provided">Provided / Sağlandı</option>
+                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                    <option value="Not Required">Not Required / Gerekli değil</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Submitted</span>
+                    <span class="lang-tr">Sunuldu</span>
+                </div>
+                <select name="submitted_4_2" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Yes">Yes / Evet</option>
+                    <option value="No">No / Hayır</option>
+                    <option value="In Progress">In Progress / Devam Ediyor</option>
+                    <option value="N/A">N/A / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Status</span>
+                    <span class="lang-tr">Durum</span>
+                </div>
+                <select name="status_4_2" onchange="updateMetrics(); updateItemStyle(this)">
+                    <option value="">Select / Seçin</option>
+                    <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+                    <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+                    <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+                </select>
+            </div>
+        </div>
+        <div class="controls-bottom">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Target Date</span>
+                    <span class="lang-tr">Hedef Tarih</span>
+                </div>
+                <input type="date" name="target_date_4_2">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Responsible Person</span>
+                    <span class="lang-tr">Sorumlu Kişi</span>
+                </div>
+                <input type="text" name="responsible_person_4_2" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Comments</span>
+                    <span class="lang-tr">Yorumlar</span>
+                </div>
+                <textarea name="comments_4_2" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4.3 -->
+<div class="audit-item">
+    <div class="item-header">
+        <div class="item-number">4.3</div>
+        <div class="item-title">
+            <span class="lang-en">HSE team resources (1 HSE person for 50 people)</span>
+            <span class="lang-tr">HSE ekip kaynakları (50 kişi için 1 HSE personeli)</span>
+        </div>
+    </div>
+    <div class="item-controls">
+        <div class="controls-row">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Undertaken</span>
+                    <span class="lang-tr">Üstlenildi</span>
+                </div>
+                <select name="undertaken_4_3" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Guideline</span>
+                    <span class="lang-tr">Kılavuz</span>
+                </div>
+                <select name="guideline_4_3" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Provided">Provided / Sağlandı</option>
+                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                    <option value="Not Required">Not Required / Gerekli değil</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Submitted</span>
+                    <span class="lang-tr">Sunuldu</span>
+                </div>
+                <select name="submitted_4_3" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Yes">Yes / Evet</option>
+                    <option value="No">No / Hayır</option>
+                    <option value="In Progress">In Progress / Devam Ediyor</option>
+                    <option value="N/A">N/A / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Status</span>
+                    <span class="lang-tr">Durum</span>
+                </div>
+                <select name="status_4_3" onchange="updateMetrics(); updateItemStyle(this)">
+                    <option value="">Select / Seçin</option>
+                    <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+                    <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+                    <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+                </select>
+            </div>
+        </div>
+        <div class="controls-bottom">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Target Date</span>
+                    <span class="lang-tr">Hedef Tarih</span>
+                </div>
+                <input type="date" name="target_date_4_3">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Responsible Person</span>
+                    <span class="lang-tr">Sorumlu Kişi</span>
+                </div>
+                <input type="text" name="responsible_person_4_3" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Comments</span>
+                    <span class="lang-tr">Yorumlar</span>
+                </div>
+                <textarea name="comments_4_3" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4.4 -->
+<div class="audit-item">
+    <div class="item-header">
+        <div class="item-number">4.4</div>
+        <div class="item-title">
+            <span class="lang-en">HSE Training Records</span>
+            <span class="lang-tr">HSE Eğitim Kayıtları</span>
+        </div>
+    </div>
+    <div class="item-controls">
+        <div class="controls-row">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Undertaken</span>
+                    <span class="lang-tr">Üstlenildi</span>
+                </div>
+                <select name="undertaken_4_4" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Guideline</span>
+                    <span class="lang-tr">Kılavuz</span>
+                </div>
+                <select name="guideline_4_4" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Provided">Provided / Sağlandı</option>
+                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                    <option value="Not Required">Not Required / Gerekli değil</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Submitted</span>
+                    <span class="lang-tr">Sunuldu</span>
+                </div>
+                <select name="submitted_4_4" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Yes">Yes / Evet</option>
+                    <option value="No">No / Hayır</option>
+                    <option value="In Progress">In Progress / Devam Ediyor</option>
+                    <option value="N/A">N/A / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Status</span>
+                    <span class="lang-tr">Durum</span>
+                </div>
+                <select name="status_4_4" onchange="updateMetrics(); updateItemStyle(this)">
+                    <option value="">Select / Seçin</option>
+                    <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+                    <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+                    <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+                </select>
+            </div>
+        </div>
+        <div class="controls-bottom">
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Target Date</span>
+                    <span class="lang-tr">Hedef Tarih</span>
+                </div>
+                <input type="date" name="target_date_4_4">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Responsible Person</span>
+                    <span class="lang-tr">Sorumlu Kişi</span>
+                </div>
+                <input type="text" name="responsible_person_4_4" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span class="lang-en">Comments</span>
+                    <span class="lang-tr">Yorumlar</span>
+                </div>
+                <textarea name="comments_4_4" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section 5: Worksite Hazard Management -->
+<div class="section-title">
+    <span class="lang-en">5. Worksite Hazard Management</span>
+    <span class="lang-tr">5. Çalışma Sahası Tehlike Yönetimi</span>
+</div>
+
+<!-- 5.1 -->
+<div class="audit-item">
+    <div class="item-header">
+        <div class="item-number">5.1</div>
+        <div class="item-title">
+            <span class="lang-en">Module 1 training - Induction</span>
+            <span class="lang-tr">Modül 1 eğitimi - Oryantasyon</span>
+        </div>
+    </div>
+    <div class="item-controls">
+        <div class="controls-row">
+            <div class="control-group">
+                <div class="control-label"><span class="lang-en">Undertaken</span><span class="lang-tr">Üstlenildi</span></div>
+                <select name="undertaken_5_1" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Applicable">Applicable / Uygulanabilir</option>
+                    <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label"><span class="lang-en">Guideline</span><span class="lang-tr">Kılavuz</span></div>
+                <select name="guideline_5_1" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Provided">Provided / Sağlandı</option>
+                    <option value="Not Provided">Not Provided / Sağlanmadı</option>
+                    <option value="Not Required">Not Required / Gerekli değil</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label"><span class="lang-en">Submitted</span><span class="lang-tr">Sunuldu</span></div>
+                <select name="submitted_5_1" onchange="updateMetrics()">
+                    <option value="">Select / Seçin</option>
+                    <option value="Yes">Yes / Evet</option>
+                    <option value="No">No / Hayır</option>
+                    <option value="In Progress">In Progress / Devam Ediyor</option>
+                    <option value="N/A">N/A / Uygulanamaz</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <div class="control-label"><span class="lang-en">Status</span><span class="lang-tr">Durum</span></div>
+                <select name="status_5_1" onchange="updateMetrics(); updateItemStyle(this)">
+                    <option value="">Select / Seçin</option>
+                    <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+                    <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+                    <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+                </select>
+            </div>
+        </div>
+        <div class="controls-bottom">
+            <div class="control-group"><div class="control-label"><span class="lang-en">Target Date</span><span class="lang-tr">Hedef Tarih</span></div><input type="date" name="target_date_5_1"></div>
+            <div class="control-group"><div class="control-label"><span class="lang-en">Responsible Person</span><span class="lang-tr">Sorumlu Kişi</span></div><input type="text" name="responsible_person_5_1" placeholder="Enter responsible person / Sorumlu kişiyi girin"></div>
+            <div class="control-group"><div class="control-label"><span class="lang-en">Comments</span><span class="lang-tr">Yorumlar</span></div><textarea name="comments_5_1" placeholder="Enter comments / Yorumlarınızı girin"></textarea></div>
+        </div>
+    </div>
+</div>
+
+<!-- 5.2 -->
+<div class="audit-item">
+  <div class="item-header">
+    <div class="item-number">5.2</div>
+    <div class="item-title">
+      <span class="lang-en">Module 2 training - Work Authorisation</span>
+      <span class="lang-tr">Modül 2 eğitimi - Çalışma İzni</span>
+    </div>
+  </div>
+  <div class="item-controls">
+    <div class="controls-row">
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Undertaken</span>
+          <span class="lang-tr">Üstlenildi</span>
+        </div>
+        <select name="undertaken_5_2" onchange="updateMetrics()">
+          <option value="">Select / Seçin</option>
+          <option value="Applicable">Applicable / Uygulanabilir</option>
+          <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Guideline</span>
+          <span class="lang-tr">Kılavuz</span>
+        </div>
+        <select name="guideline_5_2" onchange="updateMetrics()">
+          <option value="">Select / Seçin</option>
+          <option value="Provided">Provided / Sağlandı</option>
+          <option value="Not Provided">Not Provided / Sağlanmadı</option>
+          <option value="Not Required">Not Required / Gerekli değil</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Submitted</span>
+          <span class="lang-tr">Sunuldu</span>
+        </div>
+        <select name="submitted_5_2" onchange="updateMetrics()">
+          <option value="">Select / Seçin</option>
+          <option value="Yes">Yes / Evet</option>
+          <option value="No">No / Hayır</option>
+          <option value="In Progress">In Progress / Devam Ediyor</option>
+          <option value="N/A">N/A / Uygulanamaz</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Status</span>
+          <span class="lang-tr">Durum</span>
+        </div>
+        <select name="status_5_2" onchange="updateMetrics(); updateItemStyle(this)">
+          <option value="">Select / Seçin</option>
+          <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+          <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+          <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+        </select>
+      </div>
+    </div>
+    <div class="controls-bottom">
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Target Date</span>
+          <span class="lang-tr">Hedef Tarih</span>
+        </div>
+        <input type="date" name="target_date_5_2">
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Responsible Person</span>
+          <span class="lang-tr">Sorumlu Kişi</span>
+        </div>
+        <input type="text" name="responsible_person_5_2" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Comments</span>
+          <span class="lang-tr">Yorumlar</span>
+        </div>
+        <textarea name="comments_5_2" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5.3 -->
+<div class="audit-item">
+  <div class="item-header">
+    <div class="item-number">5.3</div>
+    <div class="item-title">
+      <span class="lang-en">Worksite Hazard Management Procedures</span>
+      <span class="lang-tr">Çalışma Sahası Tehlike Yönetim Prosedürleri</span>
+    </div>
+  </div>
+  <div class="item-controls">
+    <div class="controls-row">
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Undertaken</span>
+          <span class="lang-tr">Üstlenildi</span>
+        </div>
+        <select name="undertaken_5_3" onchange="updateMetrics()">
+          <option value="">Select / Seçin</option>
+          <option value="Applicable">Applicable / Uygulanabilir</option>
+          <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Guideline</span>
+          <span class="lang-tr">Kılavuz</span>
+        </div>
+        <select name="guideline_5_3" onchange="updateMetrics()">
+          <option value="">Select / Seçin</option>
+          <option value="Provided">Provided / Sağlandı</option>
+          <option value="Not Provided">Not Provided / Sağlanmadı</option>
+          <option value="Not Required">Not Required / Gerekli değil</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Submitted</span>
+          <span class="lang-tr">Sunuldu</span>
+        </div>
+        <select name="submitted_5_3" onchange="updateMetrics()">
+          <option value="">Select / Seçin</option>
+          <option value="Yes">Yes / Evet</option>
+          <option value="No">No / Hayır</option>
+          <option value="In Progress">In Progress / Devam Ediyor</option>
+          <option value="N/A">N/A / Uygulanamaz</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Status</span>
+          <span class="lang-tr">Durum</span>
+        </div>
+        <select name="status_5_3" onchange="updateMetrics(); updateItemStyle(this)">
+          <option value="">Select / Seçin</option>
+          <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+          <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+          <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+        </select>
+      </div>
+    </div>
+    <div class="controls-bottom">
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Target Date</span>
+          <span class="lang-tr">Hedef Tarih</span>
+        </div>
+        <input type="date" name="target_date_5_3">
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Responsible Person</span>
+          <span class="lang-tr">Sorumlu Kişi</span>
+        </div>
+        <input type="text" name="responsible_person_5_3" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Comments</span>
+          <span class="lang-tr">Yorumlar</span>
+        </div>
+        <textarea name="comments_5_3" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5.4 -->
+<div class="audit-item">
+  <div class="item-header">
+    <div class="item-number">5.4</div>
+    <div class="item-title">
+      <span class="lang-en">Tool and Equipment inspections (color coding - lifting gear, electrical, power tools)</span>
+      <span class="lang-tr">Alet ve Ekipman denetimleri (renk kodlama - kaldırma ekipmanı, elektrikli, el aletleri)</span>
+    </div>
+  </div>
+  <div class="item-controls">
+    <div class="controls-row">
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Undertaken</span>
+          <span class="lang-tr">Üstlenildi</span>
+        </div>
+        <select name="undertaken_5_4" onchange="updateMetrics()">
+          <option value="">Select / Seçin</option>
+          <option value="Applicable">Applicable / Uygulanabilir</option>
+          <option value="Not Applicable">Not Applicable / Uygulanamaz</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Guideline</span>
+          <span class="lang-tr">Kılavuz</span>
+        </div>
+        <select name="guideline_5_4" onchange="updateMetrics()">
+          <option value="">Select / Seçin</option>
+          <option value="Provided">Provided / Sağlandı</option>
+          <option value="Not Provided">Not Provided / Sağlanmadı</option>
+          <option value="Not Required">Not Required / Gerekli değil</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Submitted</span>
+          <span class="lang-tr">Sunuldu</span>
+        </div>
+        <select name="submitted_5_4" onchange="updateMetrics()">
+          <option value="">Select / Seçin</option>
+          <option value="Yes">Yes / Evet</option>
+          <option value="No">No / Hayır</option>
+          <option value="In Progress">In Progress / Devam Ediyor</option>
+          <option value="N/A">N/A / Uygulanamaz</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Status</span>
+          <span class="lang-tr">Durum</span>
+        </div>
+        <select name="status_5_4" onchange="updateMetrics(); updateItemStyle(this)">
+          <option value="">Select / Seçin</option>
+          <option value="1">1 - In place, can proceed / Yerinde, devam edilebilir</option>
+          <option value="2">2 - Further work required / Daha fazla çalışma gerekli</option>
+          <option value="3">3 - Not in place, cannot proceed / Yerinde değil, devam edilemez</option>
+        </select>
+      </div>
+    </div>
+    <div class="controls-bottom">
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Target Date</span>
+          <span class="lang-tr">Hedef Tarih</span>
+        </div>
+        <input type="date" name="target_date_5_4">
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Responsible Person</span>
+          <span class="lang-tr">Sorumlu Kişi</span>
+        </div>
+        <input type="text" name="responsible_person_5_4" placeholder="Enter responsible person / Sorumlu kişiyi girin">
+      </div>
+      <div class="control-group">
+        <div class="control-label">
+          <span class="lang-en">Comments</span>
+          <span class="lang-tr">Yorumlar</span>
+        </div>
+        <textarea name="comments_5_4" placeholder="Enter comments / Yorumlarınızı girin"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+         <!-- Submit Button -->
+            <div class="submit-section">
+                <button type="submit" class="submit-btn">
+                    <span class="lang-en">Submit Contractor Mobilisation Audit</span>
+                    <span class="lang-tr">Yüklenici Mobilizasyon Denetimini Gönder</span>
+                </button>
+                <p style="color: #666; margin-top: 15px; text-align: center;">
+                    <span class="lang-en">Complete assessment of contractor readiness for contract mobilisation</span>
+                    <span class="lang-tr">Yüklenicinin sözleşme mobilizasyonu için hazırlık durumunun tam değerlendirmesi</span>
+                </p>
+            </div>
+        </form>
+                    <!-- Complete with remaining sections and JavaScript -->
+            <script>
+                // Language switching function
+                function setLanguage(lang) {
+                    const body = document.body;
+                    const langButtons = document.querySelectorAll('.lang-btn');
+                    
+                    langButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    if (typeof event !== 'undefined' && event.target) {
+                        event.target.classList.add('active');
+                    } else {
+                        document.querySelectorAll('.lang-btn').forEach(btn => {
+                            if ((lang === 'en' && btn.textContent === 'English') || 
+                                (lang === 'tr' && btn.textContent === 'Türkçe')) {
+                                btn.classList.add('active');
+                            }
+                        });
+                    }
+                    
+                    if (lang === 'tr') {
+                        body.classList.add('turkish');
+                    } else {
+                        body.classList.remove('turkish');
+                    }
+                }
+
+                // Update metrics based on form values
+                function updateMetrics() {
+                    let submittedCount = 0;
+                    let toBeSubmittedCount = 0;
+                    let code1Count = 0;
+                    let code2Count = 0;
+                    let code3Count = 0;
+                    let totalApplicable = 0;
+                    let totalScore = 0;
+
+                    // Count all selects that have values
+                    const submittedSelects = document.querySelectorAll('select[name^="submitted_"]');
+                    const statusSelects = document.querySelectorAll('select[name^="status_"]');
+                    const undertakenSelects = document.querySelectorAll('select[name^="undertaken_"]');
+
+                    submittedSelects.forEach(select => {
+                        if (select.value === 'Yes') submittedCount++;
+                        if (select.value === 'No') toBeSubmittedCount++;
+                    });
+
+                    statusSelects.forEach(select => {
+                        if (select.value === '1') code1Count++;
+                        if (select.value === '2') code2Count++;
+                        if (select.value === '3') code3Count++;
+                    });
+
+                    // Count applicable items for progress calculation
+                    undertakenSelects.forEach((select, index) => {
+                        if (select.value === 'Applicable') {
+                            totalApplicable++;
+                            const statusSelect = statusSelects[index];
+                            if (statusSelect && statusSelect.value) {
+                                if (statusSelect.value === '1') totalScore += 100;
+                                if (statusSelect.value === '2') totalScore += 50;
+                                if (statusSelect.value === '3') totalScore += 0;
+                            }
+                        }
+                    });
+
+                    // Update dashboard
+                    document.getElementById('submittedCount').textContent = submittedCount;
+                    document.getElementById('toBeSubmittedCount').textContent = toBeSubmittedCount;
+                    document.getElementById('code1Count').textContent = code1Count;
+                    document.getElementById('code2Count').textContent = code2Count;
+                    document.getElementById('code3Count').textContent = code3Count;
+
+                    // Calculate progress percentage
+                    let progressPercentage = 0;
+                    if (totalApplicable > 0) {
+                        progressPercentage = Math.round((totalScore / (totalApplicable * 100)) * 100);
+                    }
+
+                    document.getElementById('progressText').textContent = progressPercentage + '%';
+                    document.getElementById('progressFill').style.width = progressPercentage + '%';
+
+                    // Change progress bar color based on percentage
+                    const progressFill = document.getElementById('progressFill');
+                    if (progressPercentage < 50) {
+                        progressFill.style.background = 'linear-gradient(90deg, #dc3545, #fd7e14)';
+                    } else if (progressPercentage < 80) {
+                        progressFill.style.background = 'linear-gradient(90deg, #ffc107, #fd7e14)';
+                    } else {
+                        progressFill.style.background = 'linear-gradient(90deg, #28a745, #20c997)';
+                    }
+                }
+
+                // Update item styling based on status
+                function updateItemStyle(statusSelect) {
+                    const auditItem = statusSelect.closest('.audit-item');
+                    auditItem.classList.remove('status-1', 'status-2', 'status-3');
+                    
+                    if (statusSelect.value) {
+                        auditItem.classList.add('status-' + statusSelect.value);
+                    }
+                }
+
+                // Initialize form
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Set current date
+                    const today = new Date().toISOString().split('T')[0];
+                    document.querySelector('input[name="audit_date"]').value = today;
+                    
+                    // Initialize metrics
+                    updateMetrics();
+                    
+                    // Add event listeners for all selects
+                    document.querySelectorAll('select').forEach(select => {
+                        select.addEventListener('change', updateMetrics);
+                    });
+
+                    // Form submission
+                    document.getElementById('mobilisationForm').addEventListener('submit', function(e) {
+                        // Add submission timestamp
+                        const timestampInput = document.createElement('input');
+                        timestampInput.type = 'hidden';
+                        timestampInput.name = 'submission_timestamp';
+                        timestampInput.value = new Date().toISOString();
+                        this.appendChild(timestampInput);
+                        
+                        console.log('Contractor Mobilisation Audit submitted successfully');
+                    });
+                });
+            </script>
+    </div>
+</body>
+</html>
